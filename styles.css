@@ -257,7 +257,7 @@ input::placeholder {
 
 .graph-wrapper {
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
   background:
     radial-gradient(circle at 30% 20%, rgba(110, 231, 175, 0.03) 0%, transparent 40%),
     radial-gradient(circle at 70% 80%, rgba(124, 58, 237, 0.03) 0%, transparent 40%),

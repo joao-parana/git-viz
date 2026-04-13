@@ -1,87 +1,25 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Git Viz — Interactive Git Visualizer</title>
+    <title>Git Viz — Visualizador Interativo de Git</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="main">
-      <section class="toolbar box">
-        <div class="toolbar-row">
-          <div class="status">HEAD → <span id="head-branch">master</span></div>
-          <div class="stats">
-            <span class="stat-item"><span class="stat-label">Commits:</span> <span id="commit-count">0</span></span>
-            <span class="stat-item"><span class="stat-label">Branches:</span> <span id="branch-count">0</span></span>
-          </div>
-          <button id="btn-add-commit" class="primary lg">Add Commit</button>
-
-          <div class="group">
-            <input id="branch-name" placeholder="branch-name" />
-            <button id="btn-create-branch" class="lg">Create Branch</button>
-          </div>
-
-          <div class="group">
-            <label for="checkout-branch">Checkout</label>
-            <select id="checkout-branch"></select>
-            <button id="btn-checkout" class="lg">Go</button>
-          </div>
-
-          <div class="group">
-            <label for="merge-branch">Merge from</label>
-            <select id="merge-branch"></select>
-            <button id="btn-merge" class="lg">Merge</button>
-          </div>
-
-          <button id="btn-reset" class="secondary lg">Reset</button>
-        </div>
-      </section>
-
+      <section id="toolbar-root" class="toolbar box"></section>
       <div class="layout">
         <section class="canvas box">
           <div id="graph-container" class="graph-wrapper">
             <svg id="graph" xmlns="http://www.w3.org/2000/svg"></svg>
-            <div id="commit-card" class="commit-card hidden"></div>
           </div>
-          <div class="hint">Click a commit to see details. Use the toolbar to build and merge branches.</div>
+          <div class="hint" id="hint-text"></div>
         </section>
-
-        <aside class="history box">
-          <h2>Command History</h2>
-          <div class="history-controls">
-            <button id="btn-undo" class="secondary">Undo Last</button>
-          </div>
-          <div id="history-list" class="history-list"></div>
-        </aside>
+        <aside id="history-root" class="history box"></aside>
       </div>
     </main>
-
-    <!-- Commit Message Dialog -->
-    <div id="commit-dialog" class="modal hidden">
-      <div class="modal-content">
-        <h2>Edit Commit Message</h2>
-        <input id="commit-message-input" type="text" placeholder="Enter commit message" />
-
-        <div class="default-messages">
-          <p>Quick defaults:</p>
-          <div class="default-buttons">
-            <button class="default-btn" data-message="fix: ">fix</button>
-            <button class="default-btn" data-message="feature: ">feature</button>
-            <button class="default-btn" data-message="docs: ">docs</button>
-            <button class="default-btn" data-message="refactor: ">refactor</button>
-            <button class="default-btn" data-message="chore: ">chore</button>
-            <button class="default-btn" data-message="test: ">test</button>
-          </div>
-        </div>
-
-        <div class="modal-buttons">
-          <button id="btn-save-message" class="primary">Save</button>
-          <button id="btn-cancel-message" class="secondary">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <script src="app.js"></script>
+    <div id="modal-root"></div>
+    <script type="module" src="/src/main.ts"></script>
   </body>
-  </html>
+</html>

@@ -96,11 +96,13 @@ git-viz/
 
 ```typescript
 interface Commit {
-  readonly id: string; // ex: "c1", "c2"
+  readonly id: string;          // ex: "c1", "c2"
   readonly message: string;
   readonly branchName: string;
   readonly parentIds: string[]; // 0 = inicial, 1 = normal, 2 = merge
   readonly timeIndex: number;
+  readonly author: string;      // padrão: "Você" (DEC-001)
+  readonly timestamp: number;   // Unix ms — Date.now() na criação (DEC-001)
 }
 ```
 
@@ -150,7 +152,9 @@ interface GitRepository {
 // IRepositoryStore.ts
 interface IRepositoryStore {
   getState(): GitRepository;
-  setState(repo: GitRepository): void;
+  setState(repo: GitRepository): void; // auto-salva snapshot antes de mudar (DEC-004)
+  undo(): boolean;                     // restaura snapshot anterior (DEC-003)
+  clearHistory(): void;                // limpa pilha de snapshots (DEC-003)
 }
 
 // IRenderer.ts
@@ -161,13 +165,14 @@ interface IRenderer {
 
 ### 4.2 Use Cases e contratos
 
-| Use Case                 | Input                          | Efeito                                      |
-| ------------------------ | ------------------------------ | ------------------------------------------- |
-| `AddCommitUseCase`       | `{ message: string }`          | Novo commit na branch atual, atualiza `tip` |
-| `CreateBranchUseCase`    | `{ name: string }`             | Nova branch a partir do `tip` atual         |
-| `CheckoutBranchUseCase`  | `{ branchName: string }`       | Move `HEAD` para a branch                   |
-| `MergeBranchUseCase`     | `{ sourceBranchName: string }` | Merge commit com 2 parents                  |
-| `ResetRepositoryUseCase` | `{}`                           | Estado inicial com 1 commit em `master`     |
+| Use Case                 | Input                          | Efeito                                              |
+| ------------------------ | ------------------------------ | --------------------------------------------------- |
+| `AddCommitUseCase`       | `{ message: string }`          | Novo commit na branch atual, atualiza `tip`         |
+| `CreateBranchUseCase`    | `{ name: string }`             | Nova branch a partir do `tip` atual                 |
+| `CheckoutBranchUseCase`  | `{ branchName: string }`       | Move `HEAD` para a branch                           |
+| `MergeBranchUseCase`     | `{ sourceBranchName: string }` | Merge commit com 2 parents                          |
+| `ResetRepositoryUseCase` | `{}`                           | Estado inicial com 1 commit em `master`, limpa undo |
+| `UndoUseCase`            | `{}`                           | Restaura o snapshot anterior via `store.undo()`     |
 
 Todos os Use Cases devem:
 
@@ -330,7 +335,11 @@ export const ptBR = {
 
 > Marque com ✅ ao decidir e mova para `DECISIONS.md`.
 
-- [ ] **Animações:** Usar CSS transitions puras ou adicionar uma lib leve (ex: `motion` / `animejs`)?
-- [ ] **Persistência:** Salvar estado em `localStorage` para não perder ao recarregar?
-- [ ] **Testes:** Adotar Vitest desde o início ou postergar?
-- [ ] **Build output:** Manter `dist/` no `.gitignore` ou fazer deploy direto do `dist/`?
+- ✅ **Animações:** CSS transitions puras. → `DECISIONS.md DEC-009`
+- ✅ **Persistência:** Apenas em memória (sem localStorage) no MVP. → `DECISIONS.md DEC-010`
+- ✅ **Testes:** Vitest postergado para após o MVP migrado. → `DECISIONS.md DEC-011`
+- ✅ **Build output:** Manter `dist/` no `.gitignore`. → `DECISIONS.md DEC-012`
+- ✅ **`author` e `timestamp` no Commit:** Adicionados à entidade. → `DECISIONS.md DEC-001`
+- ✅ **`UndoUseCase`:** Criado na camada Application. → `DECISIONS.md DEC-002`
+- ✅ **`HistoryPanel`:** Exibe log de comandos git executados. → `DECISIONS.md DEC-006`
+- ✅ **`CommitCard`:** Exibe hash, data, autor e mensagem (somente leitura). → `DECISIONS.md DEC-008`
