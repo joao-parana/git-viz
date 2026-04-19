@@ -1,6 +1,6 @@
-import type { IRepositoryStore } from '../ports/IRepositoryStore';
-import { EmptyCommitMessageError } from '../../domain/errors/DomainErrors';
-import type { Commit } from '../../domain/entities/Commit';
+import type { IRepositoryStore } from "../ports/IRepositoryStore";
+import { EmptyCommitMessageError } from "../../domain/errors/DomainErrors";
+import type { Commit } from "../../domain/entities/Commit";
 
 export interface AddCommitInput {
   message: string;
@@ -11,7 +11,7 @@ export class AddCommitUseCase {
   constructor(private readonly store: IRepositoryStore) {}
 
   execute(input: AddCommitInput): void {
-    const { message, author = 'Você' } = input;
+    const { message, author = "Você" } = input;
     if (!message.trim()) throw new EmptyCommitMessageError();
 
     const repo = this.store.getState();

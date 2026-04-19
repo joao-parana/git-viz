@@ -4,22 +4,22 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Git Viz — Visualizador Interativo de Git</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
         <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
         <main class="main">
-            <section id="toolbar-root" class="toolbar box"></section>
+            <div id="toolbar-root" class="toolbar"></div>
             <div class="layout">
-                <section class="canvas box">
-                    <div id="graph-container" class="graph-wrapper">
-                        <svg
-                            id="graph"
-                            xmlns="http://www.w3.org/2000/svg"
-                        ></svg>
-                    </div>
+                <div id="graph-container" class="graph-area">
+                    <svg id="graph" xmlns="http://www.w3.org/2000/svg"></svg>
                     <div class="hint" id="hint-text"></div>
-                </section>
-                <aside id="history-root" class="history box"></aside>
+                </div>
+                <aside id="history-root"></aside>
             </div>
         </main>
         <div id="modal-root"></div>

@@ -1,11 +1,11 @@
-import type { IRepositoryStore } from '../../application/ports/IRepositoryStore';
-import type { GitRepository } from '../../domain/entities/Repository';
+import type { IRepositoryStore } from "../../application/ports/IRepositoryStore";
+import type { GitRepository } from "../../domain/entities/Repository";
 
 export class InMemoryRepositoryStore implements IRepositoryStore {
   private current: GitRepository = {
     commits: [],
     branches: {},
-    head: { branchName: 'master' },
+    head: { branchName: "master" },
     commitCounter: 0,
   };
   private snapshots: GitRepository[] = [];

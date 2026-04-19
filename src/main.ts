@@ -1,6 +1,6 @@
-import { App } from './presentation/App';
+import { App } from "./presentation/App";
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   const app = new App();
   app.mount();
 });

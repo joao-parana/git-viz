@@ -54,35 +54,29 @@ export class Toolbar {
   private buildHTML(): string {
     const t = ptBR.toolbar;
     return `
-      <div class="toolbar-row">
-        <div class="status">${t.status} <span id="head-branch">master</span></div>
-        <div class="stats">
-          <span class="stat-item">
-            <span class="stat-label">${t.stats.commits}</span>
-            <span id="commit-count">0</span>
-          </span>
-          <span class="stat-item">
-            <span class="stat-label">${t.stats.branches}</span>
-            <span id="branch-count">0</span>
-          </span>
-        </div>
-        <button id="btn-add-commit" class="primary lg">${t.addCommit}</button>
-        <div class="group">
-          <input id="branch-name" placeholder="${t.branchPlaceholder}" />
-          <button id="btn-create-branch" class="lg">${t.createBranch}</button>
-        </div>
-        <div class="group">
-          <label for="checkout-branch">${t.checkoutLabel}</label>
-          <select id="checkout-branch"></select>
-          <button id="btn-checkout" class="lg">${t.checkoutButton}</button>
-        </div>
-        <div class="group">
-          <label for="merge-branch">${t.mergeLabel}</label>
-          <select id="merge-branch"></select>
-          <button id="btn-merge" class="lg">${t.mergeButton}</button>
-        </div>
-        <button id="btn-reset" class="secondary lg">${t.reset}</button>
+      <span class="toolbar-brand">git-viz</span>
+      <span class="toolbar-sep"></span>
+      <div class="status-badge">HEAD → <span id="head-branch">master</span></div>
+      <div class="stats">
+        <span class="stat-pill">${t.stats.commits} <span id="commit-count">0</span></span>
+        <span class="stat-pill">${t.stats.branches} <span id="branch-count">0</span></span>
       </div>
+      <div class="toolbar-group">
+        <input id="branch-name" class="toolbar-input" placeholder="${t.branchPlaceholder}" />
+        <button id="btn-create-branch" class="btn btn-secondary btn-sm">${t.createBranch}</button>
+      </div>
+      <div class="toolbar-group">
+        <label for="checkout-branch">${t.checkoutLabel}</label>
+        <select id="checkout-branch" class="toolbar-select"></select>
+        <button id="btn-checkout" class="btn btn-secondary btn-sm">${t.checkoutButton}</button>
+      </div>
+      <div class="toolbar-group">
+        <label for="merge-branch">${t.mergeLabel}</label>
+        <select id="merge-branch" class="toolbar-select"></select>
+        <button id="btn-merge" class="btn btn-secondary btn-sm">${t.mergeButton}</button>
+      </div>
+      <button id="btn-add-commit" class="btn btn-primary btn-sm">${t.addCommit}</button>
+      <button id="btn-reset" class="btn btn-danger btn-sm">${t.reset}</button>
     `;
   }
 

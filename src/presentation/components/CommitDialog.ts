@@ -1,14 +1,16 @@
 import { ptBR } from '../i18n/pt-BR';
 
-const DEFAULT_PREFIXES = ['fix: ', 'feat: ', 'docs: ', 'refactor: ', 'chore: ', 'test: '];
+const PREFIXES = ['feat:', 'fix:', 'docs:', 'chore:', 'refactor:', 'test:', 'style:', 'ci:'];
 
 export interface CommitDialogCallbacks {
   onSave: (message: string) => void;
+  onError: (message: string) => void;
 }
 
 export class CommitDialog {
   private dialogEl: HTMLElement | null = null;
   private inputEl: HTMLInputElement | null = null;
+  private activePrefix = 'feat:';
 
   constructor(private readonly callbacks: CommitDialogCallbacks) {}
 
@@ -34,23 +36,21 @@ export class CommitDialog {
 
   private buildHTML(): string {
     const t = ptBR.commitDialog;
-    const prefixButtons = DEFAULT_PREFIXES.map(p => {
-      const label = p.replace(': ', '');
-      return `<button class="default-btn" data-message="${p}">${label}</button>`;
-    }).join('');
+    const prefixButtons = PREFIXES.map((p, i) =>
+      `<button class="prefix-btn${i === 0 ? ' active' : ''}" data-prefix="${p}">${p}</button>`,
+    ).join('');
 
     return `
-      <div id="commit-dialog" class="modal hidden">
+      <div id="commit-dialog" class="modal-overlay hidden">
         <div class="modal-content">
-          <h2>${t.title}</h2>
-          <input id="commit-message-input" type="text" placeholder="${t.placeholder}" />
-          <div class="default-messages">
-            <p>${t.quickDefaults}</p>
-            <div class="default-buttons">${prefixButtons}</div>
-          </div>
-          <div class="modal-buttons">
-            <button id="btn-save-message" class="primary">${t.save}</button>
-            <button id="btn-cancel-message" class="secondary">${t.cancel}</button>
+          <div class="modal-title">${t.title}</div>
+          <div class="modal-label">${t.quickDefaults}</div>
+          <div class="modal-prefixes">${prefixButtons}</div>
+          <div class="modal-label">${t.placeholder}</div>
+          <input id="commit-message-input" class="modal-input" type="text" placeholder="Descreva a mudança..." />
+          <div class="modal-actions">
+            <button id="btn-cancel-message" class="btn btn-secondary">${t.cancel}</button>
+            <button id="btn-save-message" class="btn btn-primary">${t.save}</button>
           </div>
         </div>
       </div>
@@ -71,13 +71,13 @@ export class CommitDialog {
       if (e.target === this.dialogEl) this.close();
     });
 
-    this.dialogEl.querySelectorAll<HTMLButtonElement>('.default-btn').forEach(btn => {
+    this.dialogEl.querySelectorAll<HTMLButtonElement>('.prefix-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const prefix = btn.dataset['message'] ?? '';
+        this.dialogEl!.querySelectorAll('.prefix-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.activePrefix = btn.dataset['prefix'] ?? '';
         if (this.inputEl) {
-          this.inputEl.value = prefix;
           this.inputEl.focus();
-          this.inputEl.setSelectionRange(prefix.length, prefix.length);
         }
       });
     });
@@ -90,11 +90,12 @@ export class CommitDialog {
   }
 
   private save(): void {
-    const message = (this.inputEl?.value ?? '').trim();
-    if (!message) {
-      alert(ptBR.errors.emptyMessage);
+    const suffix = (this.inputEl?.value ?? '').trim();
+    if (!suffix) {
+      this.callbacks.onError(ptBR.errors.emptyMessage);
       return;
     }
+    const message = `${this.activePrefix} ${suffix}`;
     this.callbacks.onSave(message);
     this.close();
   }

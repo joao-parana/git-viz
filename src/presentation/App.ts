@@ -1,16 +1,17 @@
-import { InMemoryRepositoryStore } from '../infrastructure/store/InMemoryRepositoryStore';
-import { SvgGraphRenderer } from '../infrastructure/renderer/SvgGraphRenderer';
-import { AddCommitUseCase } from '../application/use-cases/AddCommitUseCase';
-import { CreateBranchUseCase } from '../application/use-cases/CreateBranchUseCase';
-import { CheckoutBranchUseCase } from '../application/use-cases/CheckoutBranchUseCase';
-import { MergeBranchUseCase } from '../application/use-cases/MergeBranchUseCase';
-import { ResetRepositoryUseCase } from '../application/use-cases/ResetRepositoryUseCase';
-import { UndoUseCase } from '../application/use-cases/UndoUseCase';
-import { Toolbar } from './components/Toolbar';
-import { CommitDialog } from './components/CommitDialog';
-import { CommitCard } from './components/CommitCard';
-import { HistoryPanel, type CommandEntry } from './components/HistoryPanel';
-import { ptBR } from './i18n/pt-BR';
+import { InMemoryRepositoryStore } from "../infrastructure/store/InMemoryRepositoryStore";
+import { SvgGraphRenderer } from "../infrastructure/renderer/SvgGraphRenderer";
+import { AddCommitUseCase } from "../application/use-cases/AddCommitUseCase";
+import { CreateBranchUseCase } from "../application/use-cases/CreateBranchUseCase";
+import { CheckoutBranchUseCase } from "../application/use-cases/CheckoutBranchUseCase";
+import { MergeBranchUseCase } from "../application/use-cases/MergeBranchUseCase";
+import { ResetRepositoryUseCase } from "../application/use-cases/ResetRepositoryUseCase";
+import { UndoUseCase } from "../application/use-cases/UndoUseCase";
+import { Toolbar } from "./components/Toolbar";
+import { CommitDialog } from "./components/CommitDialog";
+import { CommitCard } from "./components/CommitCard";
+import { HistoryPanel, type CommandEntry } from "./components/HistoryPanel";
+import { Toast } from "./components/Toast";
+import { ptBR } from "./i18n/pt-BR";
 
 export class App {
   private readonly store = new InMemoryRepositoryStore();
@@ -27,13 +28,16 @@ export class App {
   private readonly commitDialog: CommitDialog;
   private readonly commitCard: CommitCard;
   private readonly historyPanel: HistoryPanel;
+  private readonly toast: Toast;
 
   private selectedCommitId: string | null = null;
   private commandLog: CommandEntry[] = [];
 
   constructor() {
-    const svgEl = document.getElementById('graph') as unknown as SVGSVGElement;
-    const graphContainer = document.getElementById('graph-container') as HTMLElement;
+    const svgEl = document.getElementById("graph") as unknown as SVGSVGElement;
+    const graphContainer = document.getElementById(
+      "graph-container",
+    ) as HTMLElement;
 
     this.renderer = new SvgGraphRenderer(svgEl, graphContainer, {
       onCommitClick: (id) => this.onCommitSelected(id),
@@ -47,11 +51,16 @@ export class App {
     this.resetUC = new ResetRepositoryUseCase(this.store);
     this.undoUC = new UndoUseCase(this.store);
 
+    this.toast = new Toast();
+
     this.commitDialog = new CommitDialog({
       onSave: (message) => this.executeAddCommit(message),
+      onError: (message) => this.toast.show("error", message),
     });
 
-    this.commitCard = new CommitCard();
+    this.commitCard = new CommitCard({
+      onClose: () => this.onBackgroundClick(),
+    });
 
     this.toolbar = new Toolbar({
       onAddCommit: () => this.commitDialog.open(),
@@ -67,12 +76,13 @@ export class App {
   }
 
   mount(): void {
-    const toolbarRoot = document.getElementById('toolbar-root')!;
-    const historyRoot = document.getElementById('history-root')!;
-    const graphContainer = document.getElementById('graph-container')!;
-    const hintEl = document.getElementById('hint-text');
-    const modalRoot = document.getElementById('modal-root')!;
+    const toolbarRoot = document.getElementById("toolbar-root")!;
+    const historyRoot = document.getElementById("history-root")!;
+    const graphContainer = document.getElementById("graph-container")!;
+    const hintEl = document.getElementById("hint-text");
+    const modalRoot = document.getElementById("modal-root")!;
 
+    this.toast.mount();
     this.toolbar.mount(toolbarRoot);
     this.commitCard.mount(graphContainer);
     this.historyPanel.mount(historyRoot);
@@ -90,9 +100,11 @@ export class App {
     this.historyPanel.update(this.commandLog);
 
     if (this.selectedCommitId) {
-      const commit = repo.commits.find(c => c.id === this.selectedCommitId);
+      const commit = repo.commits.find((c) => c.id === this.selectedCommitId);
       if (commit) {
-        const pos = this.renderer.getCommitClientPosition(this.selectedCommitId);
+        const pos = this.renderer.getCommitClientPosition(
+          this.selectedCommitId,
+        );
         this.commitCard.show(commit, pos ?? undefined);
       } else {
         this.commitCard.hide();
@@ -110,7 +122,7 @@ export class App {
   private onCommitSelected(commitId: string): void {
     this.selectedCommitId = commitId;
     const repo = this.store.getState();
-    const commit = repo.commits.find(c => c.id === commitId);
+    const commit = repo.commits.find((c) => c.id === commitId);
     if (!commit) return;
     this.renderer.render(repo, commitId);
     this.renderer.centerOnCommit(commitId);
@@ -129,15 +141,20 @@ export class App {
     this.log(ptBR.commands.addCommit(message), ptBR.descriptions.addCommit);
     this.selectedCommitId = null;
     this.refresh();
+    this.toast.show("success", `Commit criado com sucesso.`);
   }
 
   private executeCreateBranch(name: string): void {
     try {
       this.createBranchUC.execute({ name });
-      this.log(ptBR.commands.createBranch(name), ptBR.descriptions.createBranch);
+      this.log(
+        ptBR.commands.createBranch(name),
+        ptBR.descriptions.createBranch,
+      );
       this.refresh();
+      this.toast.show("success", `Branch "${name}" criada.`);
     } catch (_e) {
-      alert(ptBR.errors.branchExists);
+      this.toast.show("error", ptBR.errors.branchExists);
     }
   }
 
@@ -152,8 +169,9 @@ export class App {
       this.mergeUC.execute({ sourceBranchName });
       this.log(ptBR.commands.merge(sourceBranchName), ptBR.descriptions.merge);
       this.refresh();
+      this.toast.show("success", `Merge de "${sourceBranchName}" concluído.`);
     } catch (_e) {
-      alert(ptBR.errors.selfMerge);
+      this.toast.show("error", ptBR.errors.selfMerge);
     }
   }
 
@@ -167,9 +185,12 @@ export class App {
   private executeUndo(): void {
     const success = this.undoUC.execute();
     if (success) {
-      this.commandLog.pop();
+      const last = this.commandLog.pop();
       this.selectedCommitId = null;
       this.refresh();
+      if (last) this.toast.show("success", `Desfeito: ${last.command}`);
+    } else {
+      this.toast.show("warning", "Nada para desfazer.");
     }
   }
 }

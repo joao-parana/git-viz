@@ -1,5 +1,5 @@
-import type { Commit } from './Commit';
-import type { Branch } from './Branch';
+import type { Commit } from "./Commit";
+import type { Branch } from "./Branch";
 
 export interface GitRepository {
   commits: Commit[];
