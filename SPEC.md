@@ -96,13 +96,13 @@ git-viz/
 
 ```typescript
 interface Commit {
-  readonly id: string;          // ex: "c1", "c2"
+  readonly id: string; // ex: "c1", "c2"
   readonly message: string;
   readonly branchName: string;
   readonly parentIds: string[]; // 0 = inicial, 1 = normal, 2 = merge
   readonly timeIndex: number;
-  readonly author: string;      // padrão: "Você" (DEC-001)
-  readonly timestamp: number;   // Unix ms — Date.now() na criação (DEC-001)
+  readonly author: string; // padrão: "Você" (DEC-001)
+  readonly timestamp: number; // Unix ms — Date.now() na criação (DEC-001)
 }
 ```
 
@@ -153,8 +153,8 @@ interface GitRepository {
 interface IRepositoryStore {
   getState(): GitRepository;
   setState(repo: GitRepository): void; // auto-salva snapshot antes de mudar (DEC-004)
-  undo(): boolean;                     // restaura snapshot anterior (DEC-003)
-  clearHistory(): void;                // limpa pilha de snapshots (DEC-003)
+  undo(): boolean; // restaura snapshot anterior (DEC-003)
+  clearHistory(): void; // limpa pilha de snapshots (DEC-003)
 }
 
 // IRenderer.ts

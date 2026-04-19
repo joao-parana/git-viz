@@ -41,14 +41,14 @@ A interface tem uma barra de ferramentas no topo e o grafo de commits no centro.
 
 ### Ações principais
 
-| Ação | O que faz |
-|---|---|
-| **Adicionar Commit** | Cria um novo commit na branch atual (HEAD) |
-| **Criar Branch** | Cria uma nova branch a partir do commit atual |
-| **Mudar para** | Faz checkout em outra branch (move o HEAD) |
-| **Mesclar de** | Faz merge de outra branch na branch atual |
-| **Resetar** | Volta ao estado inicial com `master` e 1 commit |
-| **Desfazer** | Reverte a última ação |
+| Ação                 | O que faz                                       |
+| -------------------- | ----------------------------------------------- |
+| **Adicionar Commit** | Cria um novo commit na branch atual (HEAD)      |
+| **Criar Branch**     | Cria uma nova branch a partir do commit atual   |
+| **Mudar para**       | Faz checkout em outra branch (move o HEAD)      |
+| **Mesclar de**       | Faz merge de outra branch na branch atual       |
+| **Resetar**          | Volta ao estado inicial com `master` e 1 commit |
+| **Desfazer**         | Reverte a última ação                           |
 
 ### Interagindo com o grafo
 

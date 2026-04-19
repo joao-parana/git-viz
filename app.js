@@ -121,7 +121,10 @@ function checkoutBranch(name) {
 function mergeBranch(sourceName) {
   const target = state.head.branch;
   if (!state.branches[sourceName] || sourceName === target) return;
-  recordHistory(`git merge ${sourceName}`, "Merge changes into current branch.");
+  recordHistory(
+    `git merge ${sourceName}`,
+    "Merge changes into current branch.",
+  );
   const tipTarget = state.branches[target].tip;
   const tipSource = state.branches[sourceName].tip;
   const id = newCommitId();
@@ -154,7 +157,10 @@ function layoutCommits() {
 
 function renderGraph() {
   layoutCommits();
-  const width = Math.max(800, PADDING * 2 + (state.commits.length + 1) * SPACING_X);
+  const width = Math.max(
+    800,
+    PADDING * 2 + (state.commits.length + 1) * SPACING_X,
+  );
   const lanes = Object.keys(state.branches).length || 1;
   const height = Math.max(400, PADDING * 2 + lanes * SPACING_Y);
   lastGraphSize = { width, height };
@@ -166,7 +172,10 @@ function renderGraph() {
     for (const parentId of c.parents) {
       const p = state.commits.find((x) => x.id === parentId);
       if (!p) continue;
-      const edge = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const edge = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path",
+      );
       const mx = (p.x + c.x) / 2;
       const d = `M ${p.x} ${p.y} C ${mx} ${p.y}, ${mx} ${c.y}, ${c.x} ${c.y}`;
       edge.setAttribute("d", d);
@@ -178,7 +187,10 @@ function renderGraph() {
 
   // commits
   for (const c of state.commits) {
-    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    const circle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle",
+    );
     circle.setAttribute("cx", c.x);
     circle.setAttribute("cy", c.y);
     circle.setAttribute("r", 12);
@@ -210,7 +222,10 @@ function renderGraph() {
     const labelX = tip.x + 16;
     const labelY = tip.y - 14;
 
-    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const label = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text",
+    );
     label.setAttribute("x", labelX);
     label.setAttribute("y", labelY);
     label.setAttribute("class", "label");
@@ -220,7 +235,10 @@ function renderGraph() {
     const bbox = label.getBBox();
     const padX = 10;
     const padY = 6;
-    const tagBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const tagBg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect",
+    );
     tagBg.setAttribute("x", bbox.x - padX);
     tagBg.setAttribute("y", bbox.y - padY);
     tagBg.setAttribute("rx", 10);
@@ -241,7 +259,13 @@ function selectCommit(c) {
 }
 
 function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+  return s.replace(
+    /[&<>"']/g,
+    (ch) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        ch
+      ],
+  );
 }
 
 // no command log rendering
@@ -254,7 +278,8 @@ function renderControls() {
   branchCountEl.textContent = Object.keys(state.branches).length;
 
   // Update HEAD indicator color based on current branch
-  const currentBranchColor = state.branches[state.head.branch]?.color || "#6ee7af";
+  const currentBranchColor =
+    state.branches[state.head.branch]?.color || "#6ee7af";
   headBranchEl.style.color = currentBranchColor;
 
   // checkout options
@@ -275,7 +300,8 @@ function renderAll() {
   renderHistory();
   if (selectedCommitId) {
     const c = state.commits.find((x) => x.id === selectedCommitId);
-    if (c) showCommitCard(c); else hideCommitCard();
+    if (c) showCommitCard(c);
+    else hideCommitCard();
   } else {
     hideCommitCard();
   }
@@ -283,7 +309,9 @@ function renderAll() {
 
 // Event handlers
 function bindUI() {
-  document.getElementById("btn-add-commit").addEventListener("click", () => addCommit());
+  document
+    .getElementById("btn-add-commit")
+    .addEventListener("click", () => addCommit());
   document.getElementById("btn-create-branch").addEventListener("click", () => {
     const name = document.getElementById("branch-name").value;
     createBranch(name);
@@ -301,11 +329,17 @@ function bindUI() {
     recordHistory("git init", "Initialize a new repository (reset).");
     resetRepo();
   });
-  document.getElementById("btn-undo")?.addEventListener("click", () => undoLast());
+  document
+    .getElementById("btn-undo")
+    ?.addEventListener("click", () => undoLast());
 
   // Dialog event listeners
-  document.getElementById("btn-save-message").addEventListener("click", saveCommitMessage);
-  document.getElementById("btn-cancel-message").addEventListener("click", closeCommitDialog);
+  document
+    .getElementById("btn-save-message")
+    .addEventListener("click", saveCommitMessage);
+  document
+    .getElementById("btn-cancel-message")
+    .addEventListener("click", closeCommitDialog);
 
   // Default message buttons
   document.querySelectorAll(".default-btn").forEach((btn) => {
@@ -356,26 +390,26 @@ function showCommitCard(c) {
     <div><strong>Commit</strong> <code>${c.id}</code></div>
     <div class="meta">Branch: <code>${c.branch}</code></div>
     <div>Message: ${escapeHtml(c.message)}</div>
-    <div>Parents: ${c.parents.length ? c.parents.map((p) => `<code>${p}</code>`).join(', ') : '(none)'}</div>
+    <div>Parents: ${c.parents.length ? c.parents.map((p) => `<code>${p}</code>`).join(", ") : "(none)"}</div>
   `;
-  commitCard.style.left = Math.max(8, pos.x + 16) + 'px';
-  commitCard.style.top = Math.max(8, pos.y - 10) + 'px';
-  commitCard.classList.remove('hidden');
+  commitCard.style.left = Math.max(8, pos.x + 16) + "px";
+  commitCard.style.top = Math.max(8, pos.y - 10) + "px";
+  commitCard.classList.remove("hidden");
 }
 
 function hideCommitCard() {
-  commitCard.classList.add('hidden');
+  commitCard.classList.add("hidden");
 }
 
 function openCommitDialog(c) {
   commitMessageInput.value = c.message;
   commitMessageInput.focus();
   commitMessageInput.select();
-  commitDialog.classList.remove('hidden');
+  commitDialog.classList.remove("hidden");
 }
 
 function closeCommitDialog() {
-  commitDialog.classList.add('hidden');
+  commitDialog.classList.add("hidden");
   editingCommitId = null;
 }
 
@@ -383,13 +417,16 @@ function saveCommitMessage() {
   if (!editingCommitId) return;
   const message = commitMessageInput.value.trim();
   if (!message) {
-    alert('Please enter a commit message');
+    alert("Please enter a commit message");
     return;
   }
 
   const commit = state.commits.find((c) => c.id === editingCommitId);
   if (commit) {
-    recordHistory(`git commit --amend -m '${message}'`, "Update commit message.");
+    recordHistory(
+      `git commit --amend -m '${message}'`,
+      "Update commit message.",
+    );
     commit.message = message;
   }
 
@@ -407,11 +444,13 @@ function centerOnCommit(c) {
   const scaleY = rect.height / size.height;
   const targetX = c.x * scaleX - rect.width * 0.4; // slightly left of center
   const targetY = c.y * scaleY - rect.height * 0.4;
-  graphContainer.scrollTo({ left: targetX, top: targetY, behavior: 'smooth' });
+  graphContainer.scrollTo({ left: targetX, top: targetY, behavior: "smooth" });
 }
 
 let lastGraphSize = { width: 800, height: 400 };
-function getGraphSize() { return lastGraphSize; }
+function getGraphSize() {
+  return lastGraphSize;
+}
 
 // convert SVG graph coords -> container client coords (top-left inside wrapper)
 function graphCoordsToClient(gx, gy) {
@@ -425,7 +464,7 @@ function graphCoordsToClient(gx, gy) {
 }
 
 // Hide selection if clicking on background
-graphEl.addEventListener('click', (e) => {
+graphEl.addEventListener("click", (e) => {
   if (e.target === graphEl) {
     selectedCommitId = null;
     hideCommitCard();
@@ -434,15 +473,24 @@ graphEl.addEventListener('click', (e) => {
 });
 
 // History handling and UI
-function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)); }
-function makeSnapshot() { return { state: deepCopy(state), commitCounter, selectedCommitId }; }
+function deepCopy(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+function makeSnapshot() {
+  return { state: deepCopy(state), commitCounter, selectedCommitId };
+}
 function restoreSnapshot(snap) {
   state = deepCopy(snap.state);
   commitCounter = snap.commitCounter;
   selectedCommitId = snap.selectedCommitId;
 }
 function recordHistory(command, description) {
-  history.push({ command, description, snapshot: makeSnapshot(), ts: Date.now() });
+  history.push({
+    command,
+    description,
+    snapshot: makeSnapshot(),
+    ts: Date.now(),
+  });
 }
 function undoLast() {
   if (history.length === 0) return;
@@ -453,11 +501,13 @@ function undoLast() {
 // per-entry revert removed; only Undo Last is supported
 function renderHistory() {
   if (!historyListEl) return;
-  historyListEl.innerHTML = history.map((h, i) => {
-    return `<div class="history-item">
+  historyListEl.innerHTML = history
+    .map((h, i) => {
+      return `<div class="history-item">
       <div class="meta"><span>#${i + 1}</span><span>${new Date(h.ts).toLocaleTimeString()}</span></div>
       <div class="command"><code>${h.command}</code></div>
-      <div class="meta">${h.description || ''}</div>
+      <div class="meta">${h.description || ""}</div>
     </div>`;
-  }).join('');
+    })
+    .join("");
 }

@@ -1,25 +1,28 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Git Viz — Visualizador Interativo de Git</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <main class="main">
-      <section id="toolbar-root" class="toolbar box"></section>
-      <div class="layout">
-        <section class="canvas box">
-          <div id="graph-container" class="graph-wrapper">
-            <svg id="graph" xmlns="http://www.w3.org/2000/svg"></svg>
-          </div>
-          <div class="hint" id="hint-text"></div>
-        </section>
-        <aside id="history-root" class="history box"></aside>
-      </div>
-    </main>
-    <div id="modal-root"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Git Viz — Visualizador Interativo de Git</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <main class="main">
+            <section id="toolbar-root" class="toolbar box"></section>
+            <div class="layout">
+                <section class="canvas box">
+                    <div id="graph-container" class="graph-wrapper">
+                        <svg
+                            id="graph"
+                            xmlns="http://www.w3.org/2000/svg"
+                        ></svg>
+                    </div>
+                    <div class="hint" id="hint-text"></div>
+                </section>
+                <aside id="history-root" class="history box"></aside>
+            </div>
+        </main>
+        <div id="modal-root"></div>
+        <script type="module" src="/src/main.ts"></script>
+    </body>
 </html>
