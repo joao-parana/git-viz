@@ -264,28 +264,28 @@ export const ptBR = {
 
 ### Core
 
-- [ ] Repositório inicializa com `master` e 1 commit ao carregar
-- [ ] "Adicionar Commit" cria novo commit na branch atual (HEAD)
-- [ ] "Criar Branch" cria branch a partir do tip atual
-- [ ] "Mudar para" faz checkout na branch selecionada
-- [ ] "Mesclar de" cria merge commit com 2 parents
-- [ ] "Resetar" volta ao estado inicial
-- [ ] "Desfazer" reverte a última ação
+- [x] Repositório inicializa com `master` e 1 commit ao carregar
+- [x] "Adicionar Commit" cria novo commit na branch atual (HEAD)
+- [x] "Criar Branch" cria branch a partir do tip atual
+- [x] "Mudar para" faz checkout na branch selecionada
+- [x] "Mesclar de" cria merge commit com 2 parents
+- [x] "Resetar" volta ao estado inicial
+- [x] "Desfazer" reverte a última ação
 
 ### Visualização
 
-- [ ] Grafo SVG renderiza commits como circles com ID
-- [ ] Arestas bezier conectam commits aos seus parents
-- [ ] Cada branch tem cor única e consistente
-- [ ] Label da branch aparece no tip com indicador `(HEAD)` na branch atual
-- [ ] Commit selecionado tem highlight visual
-- [ ] Clicar em commit exibe card de detalhes
+- [x] Grafo SVG renderiza commits como circles com ID
+- [x] Arestas bezier conectam commits aos seus parents
+- [x] Cada branch tem cor única e consistente
+- [x] Label da branch aparece no tip com indicador `(HEAD)` na branch atual
+- [x] Commit selecionado tem highlight visual
+- [x] Clicar em commit exibe card de detalhes
 
 ### Qualidade
 
-- [ ] `tsc --noEmit` passa sem erros
-- [ ] Toda string visível ao usuário está em `pt-BR.ts`
-- [ ] Nenhuma entidade do Domain importa do DOM ou de módulos de I/O
+- [x] `tsc --noEmit` passa sem erros
+- [x] Toda string visível ao usuário está em `pt-BR.ts`
+- [x] Nenhuma entidade do Domain importa do DOM ou de módulos de I/O
 
 ---
 
